@@ -1,98 +1,114 @@
-/* ===== Basislayout & Mobile Fix Pack (TripTale) ===== */
+/* ===== Basis ===== */
+:root { color-scheme: dark; }
+body { background: #0b1220; color: #e7eaf3; line-height: 1.5; }
+.page { min-height: 100dvh; display: flex; flex-direction: column; }
 
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
+.tt-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center;
+  height: 56px; padding: 0 12px 0 8px;
+  background: rgba(10,18,35,0.9); backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.tt-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.tt-brand img { width: 24px; height: 24px; border-radius: 50%; }
 
-*,
-*::before,
-*::after { box-sizing: border-box; }
+.tt-main { padding: 12px; }
 
-img, video, canvas, svg {
-  max-width: 100%;
-  height: auto;
-}
+/* ===== Sections / Cards ===== */
+.section { display: grid; gap: 12px; }
+.section-title { margin: 8px 2px; font-size: 1.1rem; }
 
-/* Container & Layouts */
-main, section, header, footer {
-  width: 100%;
-  max-width: 100%;
-}
+.grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
 
-#map, .map, .leaflet-container, .maplibregl-map {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: min(60vh, 520px);
-  min-height: 320px;
-  border-radius: 12px;
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
   overflow: hidden;
 }
+.card img { display: block; width: 100%; height: auto; }
+.card .note { margin: 6px 8px 10px; }
+.card figcaption { padding: 8px; }
 
-/* Popup-Container */
-.leaflet-popup-content, .maplibregl-popup-content {
-  max-width: min(86vw, 360px);
-  overflow-wrap: anywhere;
+.list { display: grid; gap: 10px; }
+.list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
 }
 
-/* Flexible Info-Zeilen */
-.stats, .info-row, .toolbar, .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  align-items: center;
+/* ===== Buttons ===== */
+.button {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 10px 14px; border-radius: 12px;
+  background: linear-gradient(135deg, #2e6bff, #38e7ff);
+  color: #08111f; font-weight: 700;
+}
+.button.ghost {
+  background: transparent; color: #e7eaf3; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ===== Map Placeholder ===== */
+.map { width: 100%; max-width: 100%; min-height: 320px; height: min(60vh, 520px); border-radius: 14px; overflow: hidden; }
+.map-placeholder { height: 100%; display: grid; place-items: center; color: #a8b7d1; }
+
+/* ===== Bottom Nav ===== */
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  height: 64px; display: grid; grid-template-columns: repeat(4,1fr);
+  background: rgba(10,18,35,0.92); backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.bottom-nav-btn {
+  display: grid; place-items: center; gap: 4px;
+  color: #a9b2c6; font-size: 12px; font-weight: 600; background: transparent;
+}
+.bottom-nav-btn .nav-icon { font-size: 18px; }
+.bottom-nav-btn.active { color: #e7eaf3; }
+
+/* ===== Onboarding ===== */
+.onboard {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(5,10,20,0.7); backdrop-filter: blur(4px);
+  display: grid; place-items: center; padding: 18px;
+}
+.onboard-card {
+  width: min(480px, 92vw); text-align: center; padding: 22px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.on-emoji { font-size: 42px; margin-bottom: 6px; }
+.on-actions { margin-top: 12px; display: flex; gap: 10px; justify-content: center; }
+.on-dots { margin-top: 10px; display: flex; gap: 6px; justify-content: center; }
+.dot { width: 8px; height: 8px; border-radius: 99px; background: rgba(255,255,255,0.28); }
+.dot.active { background: #e7eaf3; }
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  display: grid; place-items: center; z-index: 100;
+  padding: 16px;
+}
+.modal {
+  width: min(520px, 94vw); background: #0b1220; color: #e7eaf3;
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.16); overflow: hidden;
+}
+.modal-img { width: 100%; display: block; }
+.modal-title { margin: 12px 12px 4px; }
+.modal-textarea {
+  width: calc(100% - 24px); margin: 0 12px 12px; resize: vertical; min-height: 88px;
+  border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.04);
+  color: #e7eaf3; padding: 10px;
 }
 
-.stat-card, .info-chip, .button, .card, .panel {
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-/* Grid-Layouts */
-.grid, .two-col {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 768px) {
-  .grid, .two-col { grid-template-columns: 1fr 1fr; }
-}
-
-/* Typografie */
-h1, h2, h3, p, span, .value, .label {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.carousel, .gallery, .demo-strip {
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-}
-.carousel > *, .gallery > *, .demo-strip > * {
-  flex: 0 0 auto;
-  max-width: 100%;
-}
-
-/* Tabellen */
-table {
-  max-width: 100%;
-  border-collapse: collapse;
-}
-.table-wrap { width: 100%; overflow-x: auto; }
-
-/* Kleine Geräte */
-@media (max-width: 400px) { :root { font-size: 15px; } }
-
-/* Safe-Area für Notch */
-.page, main, .container {
-  padding-left: max(12px, env(safe-area-inset-left));
-  padding-right: max(12px, env(safe-area-inset-right));
-}
-
-/* Buttons automatisch umbrechen */
-.actions .button, .toolbar .button { flex: 1 1 auto; }
+/* ===== Mobile Overflow-Fixes ===== */
+html, body { overflow-x: hidden; }
+img, video, canvas, svg { max-width: 100%; height: auto; }
+section, main, header, footer { width: 100%; max-width: 100%; }
+.grid, .two-col { min-width: 0; }
