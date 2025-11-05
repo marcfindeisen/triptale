@@ -12,7 +12,7 @@
 
     <title>TripTale — Your Journey. Your Story.</title>
 
-    <!-- Splashscreen (HTML/CSS, responsive & ohne Zuschneiden) -->
+    <!-- Splashscreen -->
     <style>
       :root {
         --bg1: #071123;
@@ -21,7 +21,7 @@
         --fg:  #eaf5ff;
         --muted: #a8b7d1;
       }
-      html, body { height: 100%; margin: 0; }
+      html, body { height: 100%; margin: 0; width: 100%; max-width: 100%; overflow-x: hidden; }
       .splash {
         position: fixed; inset: 0;
         min-height: 100dvh;
@@ -64,19 +64,15 @@
         color: var(--muted);
       }
       @media (max-height: 560px) {
-        .splash-sub { display: none; } /* sehr kleine Displays: nur Logo + Titel */
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .splash { transition: none; }
+        .splash-sub { display: none; }
       }
     </style>
   </head>
 
   <body>
-    <!-- Splash-Screen -->
+    <!-- Splashscreen -->
     <div id="splash" class="splash" aria-hidden="true">
       <div class="splash-inner">
-        <!-- WICHTIG: Diese Datei muss existieren: /public/icons/triptale-globe-512.png -->
         <img class="splash-logo" src="/icons/triptale-globe-512.png" alt="TripTale Logo" />
         <h1 class="splash-title">TripTale</h1>
         <p class="splash-sub">Your Journey. Your Story.</p>
