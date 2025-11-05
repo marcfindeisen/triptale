@@ -1,6 +1,6 @@
 /* ===== Basis ===== */
 :root { color-scheme: dark; }
-body { background: #0b1220; color: #e7eaf3; line-height: 1.5; }
+body { background: #0b1220; color: #e7eaf3; line-height: 1.5; margin: 0; }
 .page { min-height: 100dvh; display: flex; flex-direction: column; }
 
 .tt-header {
@@ -53,9 +53,41 @@ body { background: #0b1220; color: #e7eaf3; line-height: 1.5; }
 }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
-/* ===== Map Placeholder ===== */
-.map { width: 100%; max-width: 100%; min-height: 320px; height: min(60vh, 520px); border-radius: 14px; overflow: hidden; }
-.map-placeholder { height: 100%; display: grid; place-items: center; color: #a8b7d1; }
+/* ===== Map ===== */
+.map,
+.leaflet-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: min(60vh, 520px);
+  min-height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.car-icon { font-size: 22px; line-height: 22px; }
+
+/* ===== Demo-Strip ===== */
+.demo-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media (min-width: 768px) {
+  .demo-strip { grid-template-columns: repeat(3, 1fr); }
+}
+.demo-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.demo-card img {
+  width: 100%; height: 150px; object-fit: cover; display: block;
+}
+.demo-body { padding: 10px; display: grid; gap: 8px; }
+.demo-body h3 { margin: 0; font-size: 0.95rem; }
 
 /* ===== Bottom Nav ===== */
 .bottom-nav {
@@ -108,7 +140,7 @@ body { background: #0b1220; color: #e7eaf3; line-height: 1.5; }
 }
 
 /* ===== Mobile Overflow-Fixes ===== */
-html, body { overflow-x: hidden; }
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
 img, video, canvas, svg { max-width: 100%; height: auto; }
 section, main, header, footer { width: 100%; max-width: 100%; }
 .grid, .two-col { min-width: 0; }
