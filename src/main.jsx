@@ -9,12 +9,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 )
 
-// Splashscreen-Steuerung: bleibt min. 1,2 s sichtbar, blendet weich aus
+// Splash: mind. 1,8 s sichtbar, erst nach 'load' weich ausblenden
 ;(function manageSplash() {
   const el = document.getElementById('splash')
   if (!el) return
 
-  const MIN_VISIBLE_MS = 1200 // Mindestdauer sichtbar (ms)
+  const MIN_VISIBLE_MS = 1800  // hier Dauer anpassen (z.B. 2000 für 2 s)
   const start = performance.now()
 
   function hideSplash() {
@@ -23,13 +23,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     setTimeout(() => el.classList.add('hide'), wait)
   }
 
-  // Wenn alles geladen → ausblenden
   if (document.readyState === 'complete') {
     hideSplash()
   } else {
     window.addEventListener('load', hideSplash, { once: true })
   }
 
-  // Fallback: max. 3 s
-  setTimeout(hideSplash, 3000)
+  // Hard-Fallback (falls 'load' nie kommt)
+  setTimeout(hideSplash, 5000)
 })()

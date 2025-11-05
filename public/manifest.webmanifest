@@ -13,15 +13,7 @@
     { "src": "/icons/triptale-globe-512.png", "sizes": "512x512", "type": "image/png" }
   ],
   "shortcuts": [
-    {
-      "name": "Meine Reise",
-      "url": "/?tab=me",
-      "icons": [{ "src": "/icons/triptale-globe-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Beispiele",
-      "url": "/?tab=demo",
-      "icons": [{ "src": "/icons/triptale-globe-192.png", "sizes": "192x192" }]
-    }
+    { "name": "Meine Reise", "url": "/?tab=me", "icons": [{ "src": "/icons/triptale-globe-192.png", "sizes": "192x192" }] },
+    { "name": "Beispiele",   "url": "/?tab=demo", "icons": [{ "src": "/icons/triptale-globe-192.png", "sizes": "192x192" }] }
   ]
 }
