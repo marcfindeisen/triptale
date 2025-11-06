@@ -127,3 +127,7 @@
 
 /* kleine Buttons */
 .button.sm { padding: 8px 10px; border-radius: 10px; font-weight: 700; }
+/* Importer / Exporter kleine Polishes */
+.modal-textarea { font-size: 14px; }
+.story-grid { margin-top: 8px; }
+.card p { margin: 6px 0; }
