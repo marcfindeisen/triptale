@@ -1,10 +1,10 @@
-// src/components/MapView.jsx
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
+
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl })
 
 /**
@@ -25,12 +25,15 @@ export default function MapView({ demo, liveTrack }) {
       zoom: 5,
       zoomControl: true,
       preferCanvas: true,
+      worldCopyJump: false, // verhindert Sprünge bei Weltkopien
     })
     mapRef.current = map
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19,
+      noWrap: true,                       // verhindert Welt-Wiederholung
+      bounds: [[-85, -180], [85, 180]],  // Begrenzung
     }).addTo(map)
 
     layerRef.current.addTo(map)

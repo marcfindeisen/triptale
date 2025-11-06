@@ -1,22 +1,170 @@
-/* Zusätze für Tracking-Buttons und Listen */
+/* ===== Basis ===== */
+:root { color-scheme: dark; }
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+body { background: #0b1220; color: #e7eaf3; line-height: 1.5; margin: 0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif; }
+.page { min-height: 100dvh; display: flex; flex-direction: column; }
+
+/* Screenreader-only (Logo-Text verstecken) */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0;
+}
+
+.tt-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center;
+  height: 56px; padding: 0 12px 0 8px;
+  background: rgba(10,18,35,0.9); backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.tt-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.tt-brand img { width: 28px; height: 28px; border-radius: 50%; }
+
+.tt-main { padding: 12px; }
+
+/* ===== Sections / Cards ===== */
+.section { display: grid; gap: 12px; }
+.section-title { margin: 8px 2px; font-size: 1.1rem; }
+
+.grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.card img { display: block; width: 100%; height: auto; }
+.card .note { margin: 6px 8px 10px; }
+.card figcaption { padding: 8px; }
+
+.list { display: grid; gap: 10px; }
+.list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px; border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ===== Buttons ===== */
+.button {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 10px 14px; border-radius: 12px;
+  background: linear-gradient(135deg, #2e6bff, #38e7ff);
+  color: #08111f; font-weight: 700;
+}
+.button.ghost {
+  background: transparent; color: #e7eaf3; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.18);
+}
 .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .actions .button { white-space: nowrap; }
-
 .list .actions .button { padding: 8px 12px; }
 
-.map, .leaflet-container {
+/* ===== Map ===== */
+.map,
+.leaflet-container {
   width: 100% !important;
   max-width: 100% !important;
   height: min(60vh, 520px);
   min-height: 320px;
   border-radius: 14px;
   overflow: hidden;
+  background:
+    radial-gradient(1200px 600px at 85% 90%, rgba(56,231,255,.10), transparent 60%),
+    radial-gradient(1000px 500px at 20% 10%, rgba(91,140,255,.12), transparent 60%),
+    #0b1220;
 }
+/* Leaflet Default Hintergrund verhindern (weiß) */
+.leaflet-container { background: #0b1220; }
+
 .car-icon { font-size: 22px; line-height: 22px; }
 
-.demo-strip { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
-@media (min-width: 768px) { .demo-strip { grid-template-columns: repeat(3, 1fr); } }
-.demo-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
-.demo-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
+/* ===== Demo-Strip ===== */
+.demo-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media (min-width: 768px) {
+  .demo-strip { grid-template-columns: repeat(3, 1fr); }
+}
+.demo-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.demo-card img {
+  width: 100%; height: 150px; object-fit: cover; display: block;
+}
 .demo-body { padding: 10px; display: grid; gap: 8px; }
 .demo-body h3 { margin: 0; font-size: 0.95rem; }
+
+/* ===== Bottom Nav (größer, konsistent) ===== */
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  height: 72px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: radial-gradient(60% 120% at 50% 0%, rgba(88,160,255,.14), transparent 60%),
+              rgba(10,18,35,0.95);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+.bottom-nav-btn {
+  display: grid; place-items: center; gap: 4px;
+  padding-top: 6px;
+  color: #b9c4d8;
+  font-size: 13px;
+  font-weight: 700;
+  background: transparent;
+  min-width: 0;
+}
+.bottom-nav-btn .nav-icon { font-size: 20px; line-height: 1; }
+.bottom-nav-btn.active {
+  color: #e7eaf3;
+  background: linear-gradient(135deg, rgba(46,107,255,.18), rgba(56,231,255,.18));
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+}
+
+/* ===== Onboarding ===== */
+.onboard {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(5,10,20,0.7); backdrop-filter: blur(4px);
+  display: grid; place-items: center; padding: 18px;
+}
+.onboard-card {
+  width: min(480px, 92vw); text-align: center; padding: 22px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.on-emoji { font-size: 42px; margin-bottom: 6px; }
+.on-actions { margin-top: 12px; display: flex; gap: 10px; justify-content: center; }
+.on-dots { margin-top: 10px; display: flex; gap: 6px; justify-content: center; }
+.dot { width: 8px; height: 8px; border-radius: 99px; background: rgba(255,255,255,0.28); }
+.dot.active { background: #e7eaf3; }
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  display: grid; place-items: center; z-index: 100;
+  padding: 16px;
+}
+.modal {
+  width: min(520px, 94vw); background: #0b1220; color: #e7eaf3;
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.16); overflow: hidden;
+}
+.modal-img { width: 100%; display: block; }
+.modal-title { margin: 12px 12px 4px; }
+.modal-textarea {
+  width: calc(100% - 24px); margin: 0 12px 12px; resize: vertical; min-height: 88px;
+  border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.04);
+  color: #e7eaf3; padding: 10px;
+}

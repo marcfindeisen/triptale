@@ -15,7 +15,7 @@ const LS = {
 export default function App() {
   const [tab, setTab] = useState(LS.get('tt_tab', 'map'))
   const [showOnboarding, setShowOnboarding] = useState(() => !LS.get('tt_onboarded', false))
-  const [savedTrips, setSavedTrips] = useState(LS.get('tt_trips', [])) // [{id,name,track:[{lat,lng,ts}], created}]
+  const [savedTrips, setSavedTrips] = useState(LS.get('tt_trips', [])) // [{id,name,track,created}]
 
   // Moments
   const [moments, setMoments] = useState(LS.get('tt_moments', []))
@@ -60,8 +60,9 @@ export default function App() {
     <div className="page">
       <header className="tt-header">
         <div className="tt-brand">
-          <img src="/icons/triptale-globe-192.png" alt="" />
-          <span>TripTale</span>
+          <img src="/icons/triptale-globe-192.png" alt="TripTale" />
+          {/* Text nur für Screenreader sichtbar, visuell ausgeblendet */}
+          <span className="sr-only">TripTale</span>
         </div>
       </header>
 
