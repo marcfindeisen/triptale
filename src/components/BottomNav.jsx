@@ -1,11 +1,11 @@
 import React from 'react'
-import { Map as MapIcon, Images, Suitcase, Clapperboard } from 'lucide-react'
+import { Map as MapIcon, Images, Briefcase, Clapperboard } from 'lucide-react'
 
 export default function BottomNav({ value, onChange }) {
   const items = [
     { id: 'map',     label: 'Karte',   Icon: MapIcon },
     { id: 'moments', label: 'Momente', Icon: Images },
-    { id: 'trips',   label: 'Reisen',  Icon: Suitcase },
+    { id: 'trips',   label: 'Reisen',  Icon: Briefcase },
     { id: 'story',   label: 'Story',   Icon: Clapperboard },
   ]
 

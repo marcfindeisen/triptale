@@ -1,42 +1,81 @@
+// src/components/Onboarding.jsx
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Map, Camera, Sparkles } from 'lucide-react'
 
 const slides = [
   {
-    title: 'Reisen tracken',
-    text: 'TripTale zeichnet deine Route per GPS auf – und setzt Highlights automatisch.',
-    emoji: '📍'
+    title: 'TripTale',
+    lead: 'Deine Reise. Deine Story.',
+    text: 'Tracke deine Route live, setze Foto-Highlights und fasse alles als Story zusammen.',
+    icon: Sparkles,
+  },
+  {
+    title: 'Routen & Wegpunkte',
+    lead: 'GPS-Track in Echtzeit',
+    text: 'Starte mit einem Tap die Fahrt, markiere Spots und sieh die Strecke auf der Karte.',
+    icon: Map,
   },
   {
     title: 'Momente festhalten',
-    text: 'Füge Fotos & Notizen hinzu. Direkt an der Karte, genau am Ort.',
-    emoji: '📸'
+    lead: 'Fotos + Notizen',
+    text: 'Speichere Erinnerungen mit Bild & Text – später als Story/Book exportieren.',
+    icon: Camera,
   },
-  {
-    title: 'Teilen & Erinnern',
-    text: 'Erstelle Storys oder ein Reise-Buch – in Sekunden.',
-    emoji: '✨'
-  }
 ]
 
 export default function Onboarding({ onDone }) {
   const [i, setI] = useState(0)
-  const next = () => (i < slides.length - 1 ? setI(i + 1) : onDone())
-  const skip = onDone
+  const next = () => setI(p => Math.min(p + 1, slides.length - 1))
+  const prev = () => setI(p => Math.max(p - 1, 0))
+  const finish = () => onDone?.()
+
+  const { title, lead, text, icon: Icon } = slides[i]
 
   return (
     <div className="onboard">
-      <div className="onboard-card">
-        <div className="on-emoji">{slides[i].emoji}</div>
-        <h2>{slides[i].title}</h2>
-        <p className="muted">{slides[i].text}</p>
-        <div className="on-actions">
-          <button className="button ghost" onClick={skip}>Überspringen</button>
-          <button className="button" onClick={next}>{i < slides.length - 1 ? 'Weiter' : 'Los geht’s'}</button>
-        </div>
+      <motion.div
+        className="onboard-card"
+        initial={{ y: 18, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={i}
+            className="onboard-inner"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="on-emoji">
+              <Icon size={44} />
+            </div>
+            <h2 className="on-title">{title}</h2>
+            <h3 className="on-lead">{lead}</h3>
+            <p className="on-text">{text}</p>
+          </motion.div>
+        </AnimatePresence>
+
         <div className="on-dots">
-          {slides.map((_, idx) => <span key={idx} className={'dot' + (i === idx ? ' active' : '')} />)}
+          {slides.map((_, idx) => (
+            <span key={idx} className={`dot ${idx === i ? 'active' : ''}`} />
+          ))}
         </div>
-      </div>
+
+        <div className="on-actions">
+          {i > 0 ? (
+            <button className="button ghost" onClick={prev}>Zurück</button>
+          ) : (
+            <button className="button ghost" onClick={finish}>Überspringen</button>
+          )}
+          {i < slides.length - 1 ? (
+            <button className="button" onClick={next}>Weiter</button>
+          ) : (
+            <button className="button" onClick={finish}>Los geht’s</button>
+          )}
+        </div>
+      </motion.div>
     </div>
   )
 }
