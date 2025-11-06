@@ -1,29 +1,30 @@
 import React from 'react'
+import { Map as MapIcon, Images, Suitcase, Clapperboard } from 'lucide-react'
 
 export default function BottomNav({ value, onChange }) {
   const items = [
-    { key: 'map',     label: 'Karte',    icon: '🗺️' },
-    { key: 'moments', label: 'Momente',  icon: '📸' },
-    { key: 'trips',   label: 'Reisen',   icon: '📒' },
-    { key: 'profile', label: 'Profil',   icon: '⚙️' },
+    { id: 'map',     label: 'Karte',   Icon: MapIcon },
+    { id: 'moments', label: 'Momente', Icon: Images },
+    { id: 'trips',   label: 'Reisen',  Icon: Suitcase },
+    { id: 'story',   label: 'Story',   Icon: Clapperboard },
   ]
+
   return (
-    <>
-      <div style={{ height: 64 }} aria-hidden="true" /> {/* spacer */}
-      <nav className="bottom-nav" role="tablist" aria-label="Hauptnavigation">
-        {items.map(it => (
+    <nav className="bottom-nav">
+      {items.map(({ id, label, Icon }) => {
+        const active = value === id
+        return (
           <button
-            key={it.key}
-            role="tab"
-            aria-selected={value === it.key}
-            className={'bottom-nav-btn' + (value === it.key ? ' active' : '')}
-            onClick={() => onChange(it.key)}
+            key={id}
+            className={`bottom-nav-btn ${active ? 'active' : ''}`}
+            onClick={() => onChange(id)}
+            aria-current={active ? 'page' : undefined}
           >
-            <span className="nav-icon">{it.icon}</span>
-            <span className="nav-label">{it.label}</span>
+            <Icon className="nav-icon" strokeWidth={active ? 2.5 : 2} />
+            <span className="nav-label">{label}</span>
           </button>
-        ))}
-      </nav>
-    </>
+        )
+      })}
+    </nav>
   )
 }
