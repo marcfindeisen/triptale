@@ -4,9 +4,9 @@ import PhotoModal from './components/PhotoModal.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import MapView from './components/MapView.jsx'
 import { DEMOS } from './data/demos.js'
+import useGeoTrack from './hooks/useGeoTrack.js'
 import './styles.css'
 
-// LocalStorage helpers
 const LS = {
   get: (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d } catch { return d } },
   set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
@@ -15,15 +15,19 @@ const LS = {
 export default function App() {
   const [tab, setTab] = useState(LS.get('tt_tab', 'map'))
   const [showOnboarding, setShowOnboarding] = useState(() => !LS.get('tt_onboarded', false))
+  const [savedTrips, setSavedTrips] = useState(LS.get('tt_trips', [])) // [{id,name,track:[{lat,lng,ts}], created}]
 
-  // Moments (Foto + Notiz)
+  // Moments
   const [moments, setMoments] = useState(LS.get('tt_moments', []))
   useEffect(() => { LS.set('tt_moments', moments) }, [moments])
   useEffect(() => { LS.set('tt_tab', tab) }, [tab])
+  useEffect(() => { LS.set('tt_trips', savedTrips) }, [savedTrips])
 
   // Photo modal
   const [modal, setModal] = useState(null)
-  const closeModal = () => setModal(null)
+
+  // Live GPS tracking
+  const { track, isTracking, start, stop, reset } = useGeoTrack()
 
   const finishOnboarding = () => { setShowOnboarding(false); LS.set('tt_onboarded', true) }
 
@@ -39,9 +43,18 @@ export default function App() {
     setModal(m => m ? { ...m, note } : m)
   }
 
-  const trips = useMemo(() => ([
-    { id: 'demo-1', name: 'USA Midwest (Demo)', points: 12, photos: moments.length }
-  ]), [moments.length])
+  // Trip speichern
+  const saveCurrentTrip = () => {
+    if (track.length < 2) return alert('Zu wenig Punkte zum Speichern.')
+    const name = prompt('Name für diese Reise:', `Reise ${new Date().toLocaleDateString()}`)
+    if (!name) return
+    setSavedTrips(t => [{ id: crypto.randomUUID(), name, track, created: Date.now() }, ...t])
+    reset()
+    setTab('trips')
+  }
+
+  // Trip laden auf Karte
+  const [loadedTripTrack, setLoadedTripTrack] = useState(null)
 
   return (
     <div className="page">
@@ -55,18 +68,37 @@ export default function App() {
       {showOnboarding && <Onboarding onDone={finishOnboarding} />}
 
       <main className="tt-main" style={{ display: showOnboarding ? 'none' : 'block' }}>
-        {tab === 'map' && <MapTab onAddMoment={onAddMoment} openPhoto={setModal} />}
+        {tab === 'map' && (
+          <MapTab
+            onAddMoment={onAddMoment}
+            openPhoto={setModal}
+            liveTrack={loadedTripTrack || track}
+            isTracking={isTracking}
+            onStart={start}
+            onStop={stop}
+            onSaveTrip={saveCurrentTrip}
+          />
+        )}
+
         {tab === 'moments' && <MomentsTab moments={moments} onAddMoment={onAddMoment} openPhoto={setModal} />}
-        {tab === 'trips' && <TripsTab trips={trips} />}
+
+        {tab === 'trips' && (
+          <TripsTab
+            trips={savedTrips}
+            onLoad={(trip) => { setLoadedTripTrack(trip.track); setTab('map') }}
+            onDelete={(id) => setSavedTrips(t => t.filter(x => x.id !== id))}
+          />
+        )}
+
         {tab === 'profile' && <ProfileTab />}
       </main>
 
-      <BottomNav value={tab} onChange={setTab} />
+      <BottomNav value={tab} onChange={(v) => { if (v !== 'map') setLoadedTripTrack(null); setTab(v) }} />
 
       {modal && (
         <PhotoModal
           item={modal}
-          onClose={closeModal}
+          onClose={() => setModal(null)}
           onSaveNote={(note) => saveNote(modal.id, note)}
         />
       )}
@@ -76,15 +108,32 @@ export default function App() {
 
 /* ---------------- Tabs ---------------- */
 
-function MapTab({ onAddMoment, openPhoto }) {
+function MapTab({ onAddMoment, openPhoto, liveTrack, isTracking, onStart, onStop, onSaveTrip }) {
   const [activeDemo, setActiveDemo] = useState(null)
 
   return (
     <section className="section">
       <h2 className="section-title">Karte</h2>
 
-      {/* Karte mit aktueller Demo */}
-      <MapView demo={activeDemo} />
+      <MapView demo={activeDemo} liveTrack={activeDemo ? null : liveTrack} />
+
+      {/* Tracking Controls */}
+      <div className="actions">
+        {!isTracking ? (
+          <button className="button" onClick={onStart}>▶️ Neue Reise starten</button>
+        ) : (
+          <>
+            <button className="button ghost" onClick={onStop}>⏸️ Stopp</button>
+            <button className="button" onClick={onSaveTrip}>💾 Reise speichern</button>
+          </>
+        )}
+
+        <label className="button">
+          📸 Moment hinzufügen
+          <input type="file" accept="image/*" capture="environment" hidden
+                 onChange={e => onAddMoment(e.target.files?.[0])}/>
+        </label>
+      </div>
 
       {/* Demo-Strip */}
       <div className="demo-strip">
@@ -97,34 +146,6 @@ function MapTab({ onAddMoment, openPhoto }) {
             </div>
           </article>
         ))}
-      </div>
-
-      {/* Aktionen */}
-      <div className="actions">
-        <label className="button">
-          📸 Moment hinzufügen
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            hidden
-            onChange={e => onAddMoment(e.target.files?.[0])}
-          />
-        </label>
-
-        <button
-          className="button ghost"
-          onClick={() =>
-            openPhoto({
-              id: 'demo',
-              src: '/icons/triptale-globe-512.png',
-              title: 'Highlight (Demo)',
-              note: 'Foto/Notiz erscheint später direkt am Wegpunkt.',
-            })
-          }
-        >
-          🎯 Highlight-Demo
-        </button>
       </div>
     </section>
   )
@@ -161,21 +182,28 @@ function MomentsTab({ moments, onAddMoment, openPhoto }) {
   )
 }
 
-function TripsTab({ trips }) {
+function TripsTab({ trips, onLoad, onDelete }) {
   return (
     <section className="section">
       <h2 className="section-title">Reisen</h2>
-      <div className="list">
-        {trips.map(t => (
-          <article key={t.id} className="list-item">
-            <div>
-              <h3>{t.name}</h3>
-              <p className="muted">{t.points} Wegpunkte · {t.photos} Fotos</p>
-            </div>
-            <button className="button ghost">Zusammenfassung</button>
-          </article>
-        ))}
-      </div>
+      {trips.length === 0 ? (
+        <p className="muted">Noch keine gespeicherten Reisen. Starte eine neue auf der Karte.</p>
+      ) : (
+        <div className="list">
+          {trips.map(t => (
+            <article key={t.id} className="list-item">
+              <div>
+                <h3>{t.name}</h3>
+                <p className="muted">{t.track.length} Punkte · {new Date(t.created).toLocaleString()}</p>
+              </div>
+              <div className="actions">
+                <button className="button" onClick={() => onLoad(t)}>Anzeigen</button>
+                <button className="button ghost" onClick={() => onDelete(t.id)}>Löschen</button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
