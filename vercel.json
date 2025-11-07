@@ -1,0 +1,33 @@
+﻿{
+  "version": 2,
+  "builds": [
+    {
+      "src": "vite.config.js",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist",
+        "zeroConfig": true
+      }
+    }
+  ],
+  "framework": "vite",
+  "buildCommand": "node node_modules/vite/bin/vite.js build",
+  "installCommand": "npm install",
+  "outputDirectory": "dist",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "api/**.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "nodeVersion": "20.x",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "regions": ["iad1"],
+  "github": {
+    "enabled": true,
+    "silent": true
+  }
+}
